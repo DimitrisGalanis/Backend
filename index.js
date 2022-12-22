@@ -1,10 +1,18 @@
 import express from "express";
 import postRoutes from "./routes/posts.js";
 import userRoutes from "./routes/users.js";
+import authRoutes from "./routes/auth.js";
+import cookieParser from "cookie-parser";
 import { db } from "./db.js";
+import cors from "cors";
 
 const app = express();
+
+app.use(cors({ origin: "http://localhost:3000" }));
+
 app.use(express.json());
+app.use(cookieParser());
+app.use("/api/auth/", authRoutes);
 app.use("/api/posts/", postRoutes);
 app.use("/api/users/", userRoutes);
 
@@ -26,11 +34,11 @@ app.get("/asdf", (req, res) => {
   const q =
     "INSERT INTO blog.USERS (`id`,`username`,`email`,`password`,`img` ) VALUES (?)";
   const values = [
-    "2",
-    "second username",
-    "2nd email",
-    "2nd password",
-    "2nd img",
+    "1",
+    "DimitrisGalanis",
+    "dimitrisgal@gmail.com",
+    "password",
+    "",
   ];
   db.query(q, [values], (err, data) => {
     if (err) return "error";

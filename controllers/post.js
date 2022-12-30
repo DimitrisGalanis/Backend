@@ -19,13 +19,14 @@ export const getPost = (req, res) => {
 
 export const addPost = (req, res) => {
   const q =
-    "INSERT INTO blog.POSTS (`title`,`description`,`img`,`date`,`uid` ) VALUES (?)";
+    "INSERT INTO blog.POSTS (`title`,`description`,`img`,`date`,`uid`,`username` ) VALUES (?)";
   const values = [
     req.body.title,
     req.body.desc,
     req.body.img,
     req.body.cat,
     req.body.uid,
+    req.body.username,
   ];
 
   db.query(q, [values], (err, data) => {

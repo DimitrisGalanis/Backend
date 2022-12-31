@@ -18,13 +18,16 @@ export const getPost = (req, res) => {
 };
 
 export const addPost = (req, res) => {
+  console.log(req.body);
   const q =
-    "INSERT INTO blog.POSTS (`title`,`description`,`img`,`date`,`uid`,`username` ) VALUES (?)";
+    "INSERT INTO blog.POSTS (`title`,`description`,`img`,`category`,`tag`,`date`,`uid`,`username` ) VALUES (?)";
   const values = [
     req.body.title,
-    req.body.desc,
+    req.body.description,
     req.body.img,
-    req.body.cat,
+    req.body.category,
+    req.body.tag,
+    req.body.date,
     req.body.uid,
     req.body.username,
   ];
@@ -45,5 +48,21 @@ export const deletePost = (req, res) => {
 };
 
 export const updatePost = (req, res) => {
-  res.json("from controller");
+  const q =
+    "UPDATE blog.POSTS SET `title`=?,`description`=?,`img`=?,`category`=?,`tag`=?,`date`=?,`uid`=?,`username`=? WHERE `id` = ?";
+  const values = [
+    req.body.title,
+    req.body.description,
+    req.body.img,
+    req.body.category,
+    req.body.tag,
+    req.body.date,
+    req.body.uid,
+    req.body.username,
+  ];
+
+  db.query(q, [...values, req.body.id], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.json("Post has been updated.");
+  });
 };

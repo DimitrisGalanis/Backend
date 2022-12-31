@@ -36,7 +36,12 @@ export const addPost = (req, res) => {
 };
 
 export const deletePost = (req, res) => {
-  res.json("from controller");
+  const postID = req.params.id;
+  const q = "DELETE FROM posts WHERE `id` = ?";
+  db.query(q, [postID], (err, data) => {
+    if (err) return res.status(403).json(err);
+    return res.json("Post has been deleted.");
+  });
 };
 
 export const updatePost = (req, res) => {

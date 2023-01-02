@@ -2,6 +2,7 @@ import express from "express";
 import postRoutes from "./routes/posts.js";
 import userRoutes from "./routes/users.js";
 import authRoutes from "./routes/auth.js";
+import commentRoutes from "./routes/comment.js";
 import cookieParser from "cookie-parser";
 import { db } from "./db.js";
 import cors from "cors";
@@ -15,6 +16,7 @@ app.use(cookieParser());
 app.use("/api/auth/", authRoutes);
 app.use("/api/posts/", postRoutes);
 app.use("/api/users/", userRoutes);
+app.use("/api/comments/", commentRoutes);
 
 app.listen(8800, () => {
   console.log("connected");

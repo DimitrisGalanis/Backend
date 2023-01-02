@@ -18,7 +18,6 @@ export const getPost = (req, res) => {
 };
 
 export const addPost = (req, res) => {
-  console.log(req.body);
   const q =
     "INSERT INTO blog.POSTS (`title`,`description`,`img`,`category`,`tag`,`date`,`uid`,`username` ) VALUES (?)";
   const values = [

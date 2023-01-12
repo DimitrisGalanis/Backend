@@ -9,7 +9,19 @@ export const getComments = (req, res) => {
 };
 
 export const addComment = (req, res) => {
-  console.log("add Comment");
+  const q =
+    "INSERT INTO blog.COMMENTS (`name`,`email`,`comment`,`post_id` ) VALUES (?)";
+  const values = [
+    req.body.name,
+    req.body.email,
+    req.body.comment,
+    req.body.postid,
+  ];
+
+  db.query(q, [values], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.json("Comment has been created.");
+  });
 };
 
 export const deleteComment = (req, res) => {

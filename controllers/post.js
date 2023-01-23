@@ -1,4 +1,14 @@
 import { db } from "../db.js";
+import { v2 as cloudinary } from "cloudinary";
+import dotenv from "dotenv";
+dotenv.config();
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
 
 export const getPosts = (req, res) => {
   const q = "SELECT * FROM posts";
@@ -17,13 +27,14 @@ export const getPost = (req, res) => {
   });
 };
 
-export const addPost = (req, res) => {
+export const addPost = async (req, res) => {
+  const url = await cloudinary.uploader.upload(req.body.img);
   const q =
     "INSERT INTO blog.POSTS (`title`,`description`,`img`,`category`,`tag`,`date`,`uid`,`username` ) VALUES (?)";
   const values = [
     req.body.title,
     req.body.description,
-    req.body.img,
+    url.url,
     req.body.category,
     req.body.tag,
     req.body.date,

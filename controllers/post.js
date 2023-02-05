@@ -28,6 +28,8 @@ export const getPost = (req, res) => {
 };
 
 export const addPost = async (req, res) => {
+  if (req.body.img === "empty")
+    return res.status(403).json("Image is required.");
   const url = await cloudinary.uploader.upload(req.body.img);
   const q =
     "INSERT INTO blog.POSTS (`title`,`description`,`img`,`category`,`tag`,`date`,`uid`,`username` ) VALUES (?)";

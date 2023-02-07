@@ -32,7 +32,7 @@ export const addPost = async (req, res) => {
     return res.status(403).json("Image is required.");
   const url = await cloudinary.uploader.upload(req.body.img);
   const q =
-    "INSERT INTO blog.POSTS (`title`,`description`,`img`,`category`,`tag`,`date`,`uid`,`username` ) VALUES (?)";
+    "INSERT INTO blog.POSTS (`title`,`description`,`img`,`category`,`tag`,`date`,`uid`,`username`,`fullname` ) VALUES (?)";
   const values = [
     req.body.title,
     req.body.description,
@@ -42,6 +42,7 @@ export const addPost = async (req, res) => {
     req.body.date,
     req.body.uid,
     req.body.username,
+    req.body.fullname,
   ];
 
   db.query(q, [values], (err, data) => {
@@ -61,7 +62,7 @@ export const deletePost = (req, res) => {
 
 export const updatePost = (req, res) => {
   const q =
-    "UPDATE blog.POSTS SET `title`=?,`description`=?,`img`=?,`category`=?,`tag`=?,`date`=?,`uid`=?,`username`=? WHERE `id` = ?";
+    "UPDATE blog.POSTS SET `title`=?,`description`=?,`img`=?,`category`=?,`tag`=?,`date`=?,`uid`=?,`username`=?,`fullname`=? WHERE `id` = ?";
   const values = [
     req.body.title,
     req.body.description,
@@ -71,6 +72,7 @@ export const updatePost = (req, res) => {
     req.body.date,
     req.body.uid,
     req.body.username,
+    req.body.fullname,
   ];
 
   db.query(q, [...values, req.body.id], (err, data) => {

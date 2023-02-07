@@ -8,7 +8,7 @@ export const register = (req, res) => {
 
   db.query(q, [req.body.email, req.body.username], (err, data) => {
     if (err) return res.status(500).json(err);
-    if (data.length) return res.status(409).json("User already exists!");
+    if (data.length) return res.status(409).json("Username already exists!");
 
     //Hash the password and create a user
     const salt = bcrypt.genSaltSync(10);
@@ -31,7 +31,7 @@ export const login = (req, res) => {
 
   db.query(q, [req.body.username], (err, data) => {
     if (err) return res.json(err);
-    if (data.length === 0) return res.status(404).json("User not found!");
+    if (data.length === 0) return res.status(404).json("Wrong username!");
 
     //Check password
     const isPasswordCorrect = bcrypt.compareSync(
@@ -39,8 +39,7 @@ export const login = (req, res) => {
       data[0].password
     );
 
-    if (!isPasswordCorrect)
-      return res.status(400).json("Wrong username or password!");
+    if (!isPasswordCorrect) return res.status(400).json("Wrong password!");
 
     const token = jwt.sign({ id: data[0].id }, process.env.MY_SECRET, {
       expiresIn: "1h",

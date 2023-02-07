@@ -4,47 +4,27 @@ import userRoutes from "./routes/users.js";
 import authRoutes from "./routes/auth.js";
 import commentRoutes from "./routes/comment.js";
 import cookieParser from "cookie-parser";
-import { db, PORT } from "./db.js";
+import { PORT } from "./db.js";
+import rateLimit from "express-rate-limit";
 import cors from "cors";
 
 const app = express();
+
+const limiter = rateLimit({
+  windowMs: 30 * 60 * 1000, // 15 minutes
+  max: 5, // limit each IP to 100 requests per windowMs
+  message: "Too many requests from this IP, please try again after 15 minutes",
+});
 
 app.use(cors({ origin: "http://localhost:3000" }));
 
 app.use(express.json({ limit: "25mb" }));
 app.use(cookieParser());
-app.use("/api/auth/", authRoutes);
+app.use("/api/auth/", limiter, authRoutes);
 app.use("/api/posts/", postRoutes);
 app.use("/api/users/", userRoutes);
 app.use("/api/comments/", commentRoutes);
 
 app.listen(PORT, () => {
   console.log("connected on port: " + PORT);
-});
-
-app.get("/123", (req, res) => {
-  const q = "SELECT * FROM blog.users";
-  db.query(q, (error, data) => {
-    if (error) return res.json(error);
-    console.log("userid: ", data[0].id);
-    console.log("username: " + data[0].username);
-    return res.json(data);
-  });
-});
-
-app.get("/asdf", (req, res) => {
-  const q =
-    "INSERT INTO blog.USERS (`id`,`username`,`email`,`password`,`img` ) VALUES (?)";
-  const values = [
-    "1",
-    "DimitrisGalanis",
-    "dimitrisgal@gmail.com",
-    "password",
-    "",
-  ];
-  db.query(q, [values], (err, data) => {
-    if (err) return "error";
-    console.log(data);
-    return res.json(data);
-  });
 });

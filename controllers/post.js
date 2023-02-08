@@ -18,6 +18,22 @@ export const getPosts = (req, res) => {
   });
 };
 
+export const getSportPosts = (req, res) => {
+  const q = "SELECT * FROM posts WHERE category = ?";
+  db.query(q, ["sports"], (error, data) => {
+    if (error) return res.json(error);
+    return res.status(200).json(data);
+  });
+};
+
+export const getPoliticsPosts = (req, res) => {
+  const q = "SELECT * FROM posts WHERE category = ?";
+  db.query(q, ["politiki"], (error, data) => {
+    if (error) return res.json(error);
+    return res.status(200).json(data);
+  });
+};
+
 export const getPost = (req, res) => {
   const q = "SELECT * FROM POSTS WHERE id = ?";
 

@@ -18,23 +18,62 @@ export const getPosts = (req, res) => {
   });
 };
 
+export const getFrontPosts = (req, res) => {
+  const q =
+    "SELECT `img`,`id`,`title`,`date`,`category` FROM posts where category = ?";
+  db.query(q, ["frontposts"], (error, data) => {
+    if (error) return res.json(error);
+    return res.status(200).json(data);
+  });
+};
+
 export const getSportPosts = (req, res) => {
-  const q = "SELECT * FROM posts WHERE category = ?";
+  const q =
+    "SELECT `title`, `description`, `date`, `id`, `img` FROM posts WHERE category = ?";
   db.query(q, ["sports"], (error, data) => {
     if (error) return res.json(error);
     return res.status(200).json(data);
   });
 };
 
+export const get3SportPosts = (req, res) => {
+  const q =
+    "SELECT `id`, `img` , `title`, `category`,`date`, `fullname` FROM posts WHERE category = ? ORDER BY id DESC LIMIT 3";
+  db.query(q, ["sports"], (error, data) => {
+    if (error) return res.json(error);
+    return res.status(200).json(data);
+  });
+};
+
+export const getOikonomia2Posts = (req, res) => {
+  const q =
+    "SELECT `id`, `img` , `title`, `category`,`date`, `fullname` FROM posts WHERE category = ? ORDER BY id DESC LIMIT 2";
+  db.query(q, ["oikonomia"], (error, data) => {
+    if (error) return res.json(error);
+    return res.status(200).json(data);
+  });
+};
+
 export const getOikonomiaPosts = (req, res) => {
-  const q = "SELECT * FROM posts WHERE category = ?";
+  const q =
+    "SELECT `id`, `img` , `title`, `category`,`date`, `fullname` FROM posts WHERE category = ?";
   db.query(q, ["oikonomia"], (error, data) => {
     if (error) return res.json(error);
     return res.status(200).json(data);
   });
 };
 export const getKosmosPosts = (req, res) => {
-  const q = "SELECT * FROM posts WHERE category = ?";
+  const q =
+    "SELECT `id`, `img` , `title`, `category`,`date`, `fullname` FROM posts WHERE category = ?";
+  db.query(q, ["world"], (error, data) => {
+    if (error) return res.json(error);
+    return res.status(200).json(data);
+  });
+};
+
+export const get3KosmosPosts = (req, res) => {
+  const q =
+    "SELECT `id`, `img` , `title`, `category`,`date`, `description`, `fullname` FROM posts WHERE category = ? ORDER BY id DESC LIMIT 3";
   db.query(q, ["world"], (error, data) => {
     if (error) return res.json(error);
     return res.status(200).json(data);
@@ -42,7 +81,8 @@ export const getKosmosPosts = (req, res) => {
 };
 
 export const getPoliticsPosts = (req, res) => {
-  const q = "SELECT * FROM posts WHERE category = ?";
+  const q =
+    "SELECT `title`, `description`, `date`, `id`, `img` FROM posts WHERE category = ?";
   db.query(q, ["politiki"], (error, data) => {
     if (error) return res.json(error);
     return res.status(200).json(data);
@@ -50,7 +90,8 @@ export const getPoliticsPosts = (req, res) => {
 };
 
 export const getPost = (req, res) => {
-  const q = "SELECT * FROM POSTS WHERE id = ?";
+  const q =
+    "SELECT `id`, `img` , `title` , `description`, `fullname` , `category` , `date` FROM POSTS WHERE id = ?";
 
   db.query(q, [req.params.id], (err, data) => {
     if (err) return res.status(500).json(err);

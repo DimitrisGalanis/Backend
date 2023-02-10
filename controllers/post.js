@@ -26,6 +26,21 @@ export const getSportPosts = (req, res) => {
   });
 };
 
+export const getOikonomiaPosts = (req, res) => {
+  const q = "SELECT * FROM posts WHERE category = ?";
+  db.query(q, ["oikonomia"], (error, data) => {
+    if (error) return res.json(error);
+    return res.status(200).json(data);
+  });
+};
+export const getKosmosPosts = (req, res) => {
+  const q = "SELECT * FROM posts WHERE category = ?";
+  db.query(q, ["world"], (error, data) => {
+    if (error) return res.json(error);
+    return res.status(200).json(data);
+  });
+};
+
 export const getPoliticsPosts = (req, res) => {
   const q = "SELECT * FROM posts WHERE category = ?";
   db.query(q, ["politiki"], (error, data) => {

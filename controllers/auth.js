@@ -45,13 +45,19 @@ export const login = (req, res) => {
       expiresIn: "1h",
     });
     const { password, ...other } = data[0];
-    res.cookie("jwt", token, { httpOnly: true }).json(other);
+
+    res
+      .cookie("jwt", token, {
+        httpOnly: true,
+      })
+      .status(200)
+      .json(other);
   });
 };
 
 export const logout = (req, res) => {
   res
-    .clearCookie("access_token", {
+    .clearCookie("jwt", {
       sameSite: "none",
       secure: true,
     })

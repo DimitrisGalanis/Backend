@@ -9,6 +9,9 @@ import rateLimit from "express-rate-limit";
 import cors from "cors";
 
 const app = express();
+app.use(cookieParser());
+app.use(express.json({ limit: "50mb" }));
+app.use(cors({ origin: "http://localhost:3000" }));
 
 const limiter = rateLimit({
   windowMs: 30 * 60 * 1000, // 15 minutes
@@ -16,10 +19,6 @@ const limiter = rateLimit({
   message: "Too many requests from this IP, please try again after 15 minutes",
 });
 
-app.use(cors({ origin: "http://localhost:3000" }));
-
-app.use(express.json({ limit: "25mb" }));
-app.use(cookieParser());
 app.use("/api/auth/", limiter, authRoutes);
 app.use("/api/posts/", postRoutes);
 app.use("/api/users/", userRoutes);

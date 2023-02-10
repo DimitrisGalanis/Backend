@@ -69,30 +69,69 @@ export const addPost = async (req, res) => {
 
 export const deletePost = (req, res) => {
   const postID = req.params.id;
-  const q = "DELETE FROM posts WHERE `id` = ?";
-  db.query(q, [postID], (err, data) => {
-    if (err) return res.status(403).json(err);
-    return res.json("Post has been deleted.");
-  });
+
+  const q =
+    "DELETE posts FROM users JOIN posts ON users.id = posts.uid  WHERE posts.id= ? AND posts.uid = ? and posts.username = ? and posts.fullname = ?";
+  db.query(
+    q,
+    [postID, req.body.uid, req.body.username, req.body.fullname],
+    (err, data) => {
+      if (err) return res.status(403).json("error");
+      if (data.affectedRows === 0) return res.send("No Post found");
+      else return res.json("Post has been deleted.");
+    }
+  );
+
+  // const q = "DELETE FROM posts WHERE `id` = ?";
+  // db.query(q, [postID], (err, data) => {
+  //   if (err) return res.status(403).json(err);
+  //   return res.json("Post has been deleted.");
+  // });
+  // return res.json("Post has been deleted.");
 };
 
-export const updatePost = (req, res) => {
-  const q =
-    "UPDATE blog.POSTS SET `title`=?,`description`=?,`img`=?,`category`=?,`tag`=?,`date`=?,`uid`=?,`username`=?,`fullname`=? WHERE `id` = ?";
-  const values = [
-    req.body.title,
-    req.body.description,
-    req.body.img,
-    req.body.category,
-    req.body.tag,
-    req.body.date,
-    req.body.uid,
-    req.body.username,
-    req.body.fullname,
-  ];
+export const updatePost = async (req, res) => {
+  if (req.body.img === "empty")
+    return res.status(403).json("Image is required.");
 
-  db.query(q, [...values, req.body.id], (err, data) => {
-    if (err) return res.status(500).json(err);
-    return res.json("Post has been updated.");
-  });
+  if (!req.body.img.startsWith("http://res.cloudinary.com/")) {
+    const url = await cloudinary.uploader.upload(req.body.img);
+    const values = [
+      req.body.title,
+      req.body.description,
+      url.url,
+      req.body.category,
+      req.body.tag,
+      req.body.date,
+      req.body.uid,
+      req.body.username,
+      req.body.fullname,
+    ];
+    const q =
+      "UPDATE blog.POSTS SET `title`=?,`description`=?,`img`=?,`category`=?,`tag`=?,`date`=?,`uid`=?,`username`=?,`fullname`=? WHERE `id` = ?";
+
+    db.query(q, [...values, req.body.id], (err, data) => {
+      if (err) return res.status(500).json(err);
+      return res.json("Post has been updated.");
+    });
+  } else {
+    const values = [
+      req.body.title,
+      req.body.description,
+      req.body.img,
+      req.body.category,
+      req.body.tag,
+      req.body.date,
+      req.body.uid,
+      req.body.username,
+      req.body.fullname,
+    ];
+    const q =
+      "UPDATE blog.POSTS SET `title`=?,`description`=?,`img`=?,`category`=?,`tag`=?,`date`=?,`uid`=?,`username`=?,`fullname`=? WHERE `id` = ?";
+
+    db.query(q, [...values, req.body.id], (err, data) => {
+      if (err) return res.status(500).json(err);
+      return res.json("Post has been updated.");
+    });
+  }
 };

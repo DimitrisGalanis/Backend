@@ -49,6 +49,8 @@ export const login = (req, res) => {
     res
       .cookie("jwt", token, {
         httpOnly: true,
+        sameSite: "none",
+        secure: true,
       })
       .status(200)
       .json(other);

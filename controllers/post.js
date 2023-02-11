@@ -18,9 +18,17 @@ export const getPosts = (req, res) => {
   });
 };
 
+export const getPosts5 = (req, res) => {
+  const q = "SELECT `id`,`img`,`title` FROM posts ORDER BY id DESC LIMIT 5";
+  db.query(q, (error, data) => {
+    if (error) return res.json(error);
+    return res.status(200).json(data);
+  });
+};
+
 export const getFrontPosts = (req, res) => {
   const q =
-    "SELECT `img`,`id`,`title`,`date`,`category` FROM posts where category = ?";
+    "SELECT `img`,`id`,`title`,`date`,`category`,`tag` FROM posts where category = ? ORDER BY id DESC LIMIT 4";
   db.query(q, ["frontposts"], (error, data) => {
     if (error) return res.json(error);
     return res.status(200).json(data);

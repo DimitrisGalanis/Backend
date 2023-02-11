@@ -1,6 +1,7 @@
 import express from "express";
 import {
   getPosts,
+  getPosts5,
   getFrontPosts,
   getSportPosts,
   get3SportPosts,
@@ -18,6 +19,7 @@ import {
 const router = express.Router();
 
 router.get("/", getPosts);
+router.get("/posts3", getPosts5);
 router.get("/frontposts", getFrontPosts);
 router.get("/sport", getSportPosts);
 router.get("/sport3", get3SportPosts);

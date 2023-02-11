@@ -19,10 +19,16 @@ const limiter = rateLimit({
   message: "Too many requests from this IP, please try again after 15 minutes",
 });
 
+const limiter2 = rateLimit({
+  windowMs: 30 * 60 * 1000, // 15 minutes
+  max: 500, // limit each IP to 100 requests per windowMs
+  message: "Too many requests from this IP, please try again after 15 minutes",
+});
+
 app.use("/api/auth/", limiter, authRoutes);
-app.use("/api/posts/", postRoutes);
+app.use("/api/posts/", limiter2, postRoutes);
 app.use("/api/users/", userRoutes);
-app.use("/api/comments/", commentRoutes);
+app.use("/api/comments/", limiter2, commentRoutes);
 
 app.listen(PORT, () => {
   console.log("connected on port: " + PORT);

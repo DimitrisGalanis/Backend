@@ -99,7 +99,7 @@ export const getPoliticsPosts = (req, res) => {
 
 export const getPost = (req, res) => {
   const q =
-    "SELECT `id`, `img` , `title` , `description`, `fullname` , `category` , `date` FROM POSTS WHERE id = ?";
+    "SELECT `id`, `img` , `title` , `description`, `fullname` , `category` , `date` FROM posts WHERE id = ?";
 
   db.query(q, [req.params.id], (err, data) => {
     if (err) return res.status(500).json(err);
@@ -112,7 +112,7 @@ export const addPost = async (req, res) => {
     return res.status(403).json("Image is required.");
   const url = await cloudinary.uploader.upload(req.body.img);
   const q =
-    "INSERT INTO blog.POSTS (`title`,`description`,`img`,`category`,`tag`,`date`,`uid`,`username`,`fullname` ) VALUES (?)";
+    "INSERT INTO posts (`title`,`description`,`img`,`category`,`tag`,`date`,`uid`,`username`,`fullname` ) VALUES (?)";
   const values = [
     req.body.title,
     req.body.description,
@@ -172,7 +172,7 @@ export const updatePost = async (req, res) => {
       req.body.fullname,
     ];
     const q =
-      "UPDATE blog.POSTS SET `title`=?,`description`=?,`img`=?,`category`=?,`tag`=?,`date`=?,`uid`=?,`username`=?,`fullname`=? WHERE `id` = ?";
+      "UPDATE posts SET `title`=?,`description`=?,`img`=?,`category`=?,`tag`=?,`date`=?,`uid`=?,`username`=?,`fullname`=? WHERE `id` = ?";
 
     db.query(q, [...values, req.body.id], (err, data) => {
       if (err) return res.status(500).json(err);
@@ -191,7 +191,7 @@ export const updatePost = async (req, res) => {
       req.body.fullname,
     ];
     const q =
-      "UPDATE blog.POSTS SET `title`=?,`description`=?,`img`=?,`category`=?,`tag`=?,`date`=?,`uid`=?,`username`=?,`fullname`=? WHERE `id` = ?";
+      "UPDATE posts SET `title`=?,`description`=?,`img`=?,`category`=?,`tag`=?,`date`=?,`uid`=?,`username`=?,`fullname`=? WHERE `id` = ?";
 
     db.query(q, [...values, req.body.id], (err, data) => {
       if (err) return res.status(500).json(err);

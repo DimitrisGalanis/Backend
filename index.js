@@ -11,7 +11,7 @@ import cors from "cors";
 const app = express();
 app.use(cookieParser());
 app.use(express.json({ limit: "50mb" }));
-app.use(cors({ origin: process.env.LISTEN }));
+app.use(cors({ origin: "https://www.rubiks.live", credentials: true }));
 
 const limiter = rateLimit({
   windowMs: 30 * 60 * 1000, // 15 minutes

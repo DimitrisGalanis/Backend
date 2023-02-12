@@ -9,8 +9,19 @@ import rateLimit from "express-rate-limit";
 import cors from "cors";
 
 const app = express();
+
+app.use(
+  cors({
+    origin: process.env.LINK,
+    credentials: true,
+  })
+);
+
 app.use(cookieParser());
 app.use(express.json({ limit: "50mb" }));
+app.listen(PORT, () => {
+  console.log("connected on port: " + PORT);
+});
 
 const limiter = rateLimit({
   windowMs: 30 * 60 * 1000, // 15 minutes
@@ -29,6 +40,6 @@ app.use("/api/posts/", limiter2, postRoutes);
 app.use("/api/users/", userRoutes);
 app.use("/api/comments/", limiter2, commentRoutes);
 
-app.listen(PORT, () => {
-  console.log("connected on port: " + PORT);
+app.get("/", (req, res) => {
+  res.send("hello world");
 });

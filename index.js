@@ -12,7 +12,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "www.rubiks.live",
+    origin: "https://www.rubiks.live/",
   })
 );
 

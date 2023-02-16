@@ -46,14 +46,14 @@ export const login = (req, res) => {
     });
     const { password, ...other } = data[0];
 
-    res
-      .cookie("jwt", token, {
-        httpOnly: true,
-        sameSite: "none",
-        secure: true,
-      })
-      .status(200)
-      .json(other);
+    const cookie = res.cookie("jwt", token, {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+    });
+
+    // how to add token in other response?
+    return res.status(200).json({ token, ...other });
   });
 };
 

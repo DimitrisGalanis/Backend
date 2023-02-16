@@ -1,6 +1,7 @@
 import { db } from "../db.js";
 import { v2 as cloudinary } from "cloudinary";
 import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 dotenv.config();
 
 cloudinary.config({
@@ -108,30 +109,44 @@ export const getPost = (req, res) => {
 };
 
 export const addPost = async (req, res) => {
-  if (req.body.img === "empty")
-    return res.status(403).json("Image is required.");
-  const url = await cloudinary.uploader.upload(req.body.img);
-  const q =
-    "INSERT INTO posts (`title`,`description`,`img`,`category`,`tag`,`date`,`uid`,`username`,`fullname` ) VALUES (?)";
-  const values = [
-    req.body.title,
-    req.body.description,
-    url.url,
-    req.body.category,
-    req.body.tag,
-    req.body.date,
-    req.body.uid,
-    req.body.username,
-    req.body.fullname,
-  ];
+  const token = req.body.token;
+  if (!token) return res.status(403).json("You are not authenticated.");
 
-  db.query(q, [values], (err, data) => {
-    if (err) return res.status(500).json(err);
-    return res.json("Post has been created.");
+  jwt.verify(token, process.env.MY_SECRET, async (err, userInfo) => {
+    if (err) return res.status(403).json("Token is not valid!");
+    if (req.body.img === "empty")
+      return res.status(403).json("Image is required.");
+
+    const url = await cloudinary.uploader.upload(req.body.img);
+    const q =
+      "INSERT INTO posts (`title`,`description`,`img`,`category`,`tag`,`date`,`uid`,`username`,`fullname` ) VALUES (?)";
+    const values = [
+      req.body.title,
+      req.body.description,
+      url.url,
+      req.body.category,
+      req.body.tag,
+      req.body.date,
+      req.body.uid,
+      req.body.username,
+      req.body.fullname,
+    ];
+
+    db.query(q, [values], (err, data) => {
+      if (err) return res.status(500).json(err);
+      return res.json("Post has been created.");
+    });
   });
 };
 
 export const deletePost = (req, res) => {
+  const token = req.body.token;
+  if (!token) return res.status(403).json("You are not authenticated.");
+
+  jwt.verify(token, process.env.MY_SECRET, async (err, userInfo) => {
+    if (err) return res.status(403).json("Token is not valid!");
+  });
+
   const postID = req.params.id;
 
   const q =
@@ -154,48 +169,54 @@ export const deletePost = (req, res) => {
   // return res.json("Post has been deleted.");
 };
 
-export const updatePost = async (req, res) => {
-  if (req.body.img === "empty")
-    return res.status(403).json("Image is required.");
+export const updatePost = (req, res) => {
+  const token = req.body.token;
+  if (!token) return res.status(403).json("You are not authenticated.");
 
-  if (!req.body.img.startsWith("http://res.cloudinary.com/")) {
-    const url = await cloudinary.uploader.upload(req.body.img);
-    const values = [
-      req.body.title,
-      req.body.description,
-      url.url,
-      req.body.category,
-      req.body.tag,
-      req.body.date,
-      req.body.uid,
-      req.body.username,
-      req.body.fullname,
-    ];
-    const q =
-      "UPDATE posts SET `title`=?,`description`=?,`img`=?,`category`=?,`tag`=?,`date`=?,`uid`=?,`username`=?,`fullname`=? WHERE `id` = ?";
+  jwt.verify(token, process.env.MY_SECRET, async (err, userInfo) => {
+    if (err) return res.status(403).json("Token is not valid!");
+    if (req.body.img === "empty")
+      return res.status(403).json("Image is required.");
 
-    db.query(q, [...values, req.body.id], (err, data) => {
-      if (err) return res.status(500).json(err);
-      return res.json("Post has been updated.");
-    });
-  } else {
-    const values = [
-      req.body.title,
-      req.body.description,
-      req.body.img,
-      req.body.category,
-      req.body.tag,
-      req.body.date,
-      req.body.uid,
-      req.body.username,
-      req.body.fullname,
-    ];
-    const q =
-      "UPDATE posts SET `title`=?,`description`=?,`img`=?,`category`=?,`tag`=?,`date`=?,`uid`=?,`username`=?,`fullname`=? WHERE `id` = ?";
+    if (!req.body.img.startsWith("http://res.cloudinary.com/")) {
+      const url = await cloudinary.uploader.upload(req.body.img);
+      const values = [
+        req.body.title,
+        req.body.description,
+        url.url,
+        req.body.category,
+        req.body.tag,
+        req.body.date,
+        req.body.uid,
+        req.body.username,
+        req.body.fullname,
+      ];
+      const q =
+        "UPDATE posts SET `title`=?,`description`=?,`img`=?,`category`=?,`tag`=?,`date`=?,`uid`=?,`username`=?,`fullname`=? WHERE `id` = ?";
 
-    db.query(q, [...values, req.body.id], (err, data) => {
-      if (err) return res.status(500).json(err);
-      return res.json("Post has been updated.");
-    });
-  }
+      db.query(q, [...values, req.body.id], (err, data) => {
+        if (err) return res.status(500).json(err);
+        return res.json("Post has been updated.");
+      });
+    } else {
+      const values = [
+        req.body.title,
+        req.body.description,
+        req.body.img,
+        req.body.category,
+        req.body.tag,
+        req.body.date,
+        req.body.uid,
+        req.body.username,
+        req.body.fullname,
+      ];
+      const q =
+        "UPDATE posts SET `title`=?,`description`=?,`img`=?,`category`=?,`tag`=?,`date`=?,`uid`=?,`username`=?,`fullname`=? WHERE `id` = ?";
+
+      db.query(q, [...values, req.body.id], (err, data) => {
+        if (err) return res.status(500).json(err);
+        return res.json("Post has been updated.");
+      });
+    }
+  });
 };

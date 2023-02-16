@@ -9,7 +9,11 @@ import rateLimit from "express-rate-limit";
 import cors from "cors";
 
 const app = express();
-const whitelist = ["https://www.rubiks.live", "https://rubiks.live"];
+const whitelist = [
+  "https://www.rubiks.live",
+  "https://rubiks.live",
+  "http://localhost:3000",
+]; //remove localhost deployment
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {

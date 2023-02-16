@@ -10,7 +10,7 @@ export const getComments = (req, res) => {
 
 export const addComment = (req, res) => {
   const q =
-    "INSERT INTO blog.COMMENTS (`name`,`email`,`comment`,`post_id` ) VALUES (?)";
+    "INSERT INTO comments (`name`,`email`,`comment`,`post_id` ) VALUES (?)";
   const values = [
     req.body.name,
     req.body.email,
